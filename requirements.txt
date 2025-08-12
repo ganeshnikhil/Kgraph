@@ -1,0 +1,13 @@
+# Core LLM and LangChain packages
+langchain>=0.1.0
+langchain-experimental>=0.0.45
+langchain-ollama>=0.3.6
+
+# Environment variable support
+python-dotenv>=1.0.0
+
+# Graph visualization
+pyvis>=0.3.2
+
+# Web UI
+streamlit>=1.32.0
