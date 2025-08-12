@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 =======
 # 🧠 Knowledge Graph From Text
 
@@ -97,6 +95,5 @@ Then:
 ---
 
 ## 📜 License
-
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
->>>>>>> c6f6b55 (Save local changes before rebase)
+
