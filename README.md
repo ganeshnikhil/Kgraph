@@ -44,8 +44,8 @@ You can upload a `.txt` file or paste text, and the app will create a graph wher
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/<your-username>/<your-repo-name>.git
-cd <your-repo-name>
+git clone https://github.com/ganeshnikhil/Kgraph.git
+cd Kgraph
 ```
 
 2. **Create a virtual environment**
