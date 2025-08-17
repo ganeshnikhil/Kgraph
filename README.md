@@ -9,7 +9,8 @@ You can upload a `.txt` file or paste text, and the app will create a graph wher
 ## 📸 Preview
 
 ![App Screenshot](sc.png)
-
+------------------------------------------------------------------
+![App Screenshot](n_sc.png)
 ---
 
 ## 🚀 Features
