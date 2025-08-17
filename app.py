@@ -3,7 +3,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from src.graph.generate_kgraph import generate_knowledge_graph
 from src.utils.file_op import hash_text , list_graph_files ,save_graph_html , file_already_exist 
-from src.model.list_models import get_ollama_models
+from src.model.model_info import get_ollama_models
 from src.config.folder_con import DATA_DIR
 
 # --- Load environment variables ---
