@@ -1,14 +1,16 @@
 from pyvis.network import Network
+from collections import defaultdict
 
-def visualize_graph(graph_documents):
+def visualize_graph(graph_documents, max_nodes=None):
     """
-    Builds and styles a PyVis knowledge graph from extracted nodes and relationships.
-
+    Builds a PyVis knowledge graph from one or more GraphDocument objects with enhanced visualization.
+    
     Args:
-        graph_documents (list): GraphDocument objects.
-
+        graph_documents (list): List of GraphDocument objects.
+        max_nodes (int, optional): If set, limits number of nodes for performance.
+        
     Returns:
-        Network: A PyVis Network object.
+        Network: PyVis Network object.
     """
     net = Network(
         height="900px", width="100%", directed=True,
@@ -29,45 +31,71 @@ def visualize_graph(graph_documents):
         "Default": "#D3D3D3"
     }
 
-    doc = graph_documents[0]
-    node_dict = {node.id: node for node in doc.nodes}
+    # --- Merge nodes and edges from all documents ---
+    node_dict = {}
+    edges = []
+    for doc in graph_documents:
+        for node in doc.nodes:
+            node_dict[node.id] = node  # overwrite duplicates
+        for rel in doc.relationships:
+            edges.append(rel)
 
-    valid_edges = []
-    valid_node_ids = set()
-
-    for rel in doc.relationships:
+    # Compute node importance (degree)
+    degree_count = defaultdict(int)
+    for rel in edges:
         if rel.source.id in node_dict and rel.target.id in node_dict:
-            valid_edges.append(rel)
-            valid_node_ids.update([rel.source.id, rel.target.id])
+            degree_count[rel.source.id] += 1
+            degree_count[rel.target.id] += 1
 
+    # Optional: limit nodes for very large graphs
+    if max_nodes:
+        # Keep only top nodes by degree
+        top_nodes = set(sorted(degree_count, key=degree_count.get, reverse=True)[:max_nodes])
+        edges = [e for e in edges if e.source.id in top_nodes and e.target.id in top_nodes]
+        node_dict = {nid: node_dict[nid] for nid in top_nodes}
+        degree_count = {nid: degree_count[nid] for nid in top_nodes}
+
+    # --- Add nodes ---
     def truncate_label(label, max_len=30):
         return label if len(label) <= max_len else label[:max_len] + "..."
 
-    for node_id in valid_node_ids:
-        node = node_dict[node_id]
-        label = truncate_label(node.id)
+    for node_id, node in node_dict.items():
+        importance = degree_count.get(node_id, 1)
         net.add_node(
             node.id,
-            label=label,
-            title=f"<b>ID:</b> {node.id}<br><b>Type:</b> {node.type}",
+            label=truncate_label(node.id),
+            title=f"<b>ID:</b> {node.id}<br><b>Type:</b> {node.type}<br><b>Degree:</b> {importance}",
             color=node_color_map.get(node.type, node_color_map["Default"]),
             shape="dot",
-            size=35,
-            font={"size": 20, "color": "white"},
+            size=15 + min(importance * 2, 40),  # scale size
+            font={"size": 16, "color": "white"},
             group=node.type
         )
 
-    for rel in valid_edges:
-        net.add_edge(
-            rel.source.id,
-            rel.target.id,
-            label=rel.type.title(),
-            font={"color": "#ffffff", "size": 14, "face": "arial"},
-            arrows="to",
-            color="#999999",
-            smooth={"enabled": True, "type": "dynamic"}
-        )
+    # --- Add edges ---
+    for rel in edges:
+        if rel.source.id in node_dict and rel.target.id in node_dict:
+            # Edge width/color based on type
+            edge_color = "#999999"
+            width = 2
+            if rel.type.lower() in ["parent", "owns", "leads"]:
+                edge_color = "#FF6F61"
+                width = 4
+            elif rel.type.lower() in ["associated", "related"]:
+                edge_color = "#87CEEB"
+                width = 3
+            net.add_edge(
+                rel.source.id,
+                rel.target.id,
+                label=rel.type.title(),
+                arrows="to",
+                color=edge_color,
+                width=width,
+                smooth={"enabled": True, "type": "dynamic"},
+                font={"color": "#ffffff", "size": 12}
+            )
 
+    # --- Network options ---
     net.set_options("""
     {
       "layout": {
@@ -89,9 +117,7 @@ def visualize_graph(graph_documents):
       "interaction": {
         "hover": true,
         "navigationButtons": true,
-        "keyboard": {
-          "enabled": true
-        },
+        "keyboard": {"enabled": true},
         "tooltipDelay": 200
       },
       "physics": {
@@ -105,10 +131,7 @@ def visualize_graph(graph_documents):
           "damping": 0.09
         },
         "minVelocity": 0.75,
-        "stabilization": {
-          "enabled": true,
-          "iterations": 200
-        }
+        "stabilization": {"enabled": true, "iterations": 200}
       }
     }
     """)
