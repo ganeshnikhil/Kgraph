@@ -24,21 +24,26 @@ You can upload a `.txt` file or paste text, and the app will create a graph wher
 ---
 
 ## 📂 Project Structure
-
 ```
 .
-├── app.py                       # Main Streamlit app
-├── Data/                        # Stored generated graph HTML files
-├── src/
-│   ├── config/folder_con.py     # Folder path configurations
-│   ├── graph/generate_kgraph.py # Graph generation logic
-│   ├── model/list_models.py     # Ollama models listing
-│   ├── utils/file_op.py         # File operations and hashing
-├── requirements.txt             # Python dependencies
-├── README.md                    # Project documentation
-└── sc.png                       # Screenshot of the app
+├── app.py            # Main Streamlit app 
+├── Data              # Folder containing .html files.
+├── n_sc.png          # Image file (doc)
+├── README.md         # Project documentation and instructions(doc)
+├── requirements.txt  # List of Python dependencies for the project(libraries)
+├── sc.png            # Another image file (doc)
+└── src
+    ├── config
+    │   └── folder_con.py       # Configuration for folder creation
+    ├── graph
+    │   ├── generate_kgraph.py  # Script to generate knowledge graphs
+    │   └── visulization.py     # Script to visualize knowledge graphs (PyVis)
+    ├── model
+    │   └── model_info.py       # information about installed Ollama models/context len
+    └── utils
+        ├── file_op.py          # Utility functions for file operations (read/write)
+        └── text_clean.py       # Utility functions for text preprocessing/cleaning
 ```
-
 ---
 
 ## ⚙️ Installation
