@@ -66,7 +66,7 @@ Follow instructions from: [https://ollama.ai/download](https://ollama.ai/downloa
 
 5. **Download a model** (example with Gemma)
 ```bash
-ollama pull gemma
+ollama pull gemma3:4b
 ```
 
 ---
