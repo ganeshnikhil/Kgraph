@@ -1,12 +1,30 @@
+import os
 import asyncio
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_core.documents import Document
-from langchain_ollama import ChatOllama
+from ollama import Client 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from src.graph.visulization import visualize_graph
 from src.model.model_info import get_context_length
 from src.utils.text_clean import clean_text
 
+host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+client = Client(host=host)
+
+class OllamaLLMWrapper:
+    def __init__(self, client, model="llama2", temperature=0):
+        self.client = client
+        self.model = model
+        self.temperature = temperature
+
+    def __call__(self, prompt):
+        response = self.client.chat(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=self.temperature
+        )
+        return response["message"]["content"]
+ 
 # -------------------
 # 1️⃣ Async batch processor for large datasets
 # -------------------
@@ -68,7 +86,7 @@ def generate_knowledge_graph(text: str, selected_model: str = None, batch_size: 
         documents = [Document(page_content=text)]
 
     # Initialize LLM and Graph Transformer
-    llm = ChatOllama(temperature=0, model=selected_model)
+    llm = OllamaLLMWrapper(client, model=selected_model, temperature=0)
     graph_transformer = LLMGraphTransformer(llm=llm)
 
     # Extract graph asynchronously in batches

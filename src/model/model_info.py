@@ -1,8 +1,14 @@
-import ollama
+from ollama import Client
+import os
+
+# Connect to Ollama inside Docker
+host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+client = Client(host=host)
+
 
 def get_ollama_models():
     try:
-        models = ollama.list()
+        models = client.list()
         model_names = [model['model'] for model in models['models']]
         return model_names 
     except Exception as e:
@@ -11,7 +17,7 @@ def get_ollama_models():
 
 def get_context_length(model: str):
     try:
-        info = ollama.show(model)
+        info = client.show(model)
         details = info.get("modelinfo", {})
         family = info.get("details", {}).get("family", "")
         
