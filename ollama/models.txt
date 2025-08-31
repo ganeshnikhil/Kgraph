@@ -1,0 +1,2 @@
+nomic-embed-text
+llama3.2:latest
