@@ -68,7 +68,13 @@ def visualize_graph(graph_documents, max_nodes=None):
             color=node_color_map.get(node.type, node_color_map["Default"]),
             shape="dot",
             size=15 + min(importance * 2, 40),  # scale size
-            font={"size": 16, "color": "white"},
+            font={
+                "size": 18,       # slightly bigger
+                "color": "#FFFF00",  # bright yellow
+                "face": "Arial",
+                "strokeWidth": 1,
+                "strokeColor": "#000000",
+                "bold": True},  # subtle outline for readability},
             group=node.type
         )
 
@@ -92,7 +98,7 @@ def visualize_graph(graph_documents, max_nodes=None):
                 color=edge_color,
                 width=width,
                 smooth={"enabled": True, "type": "dynamic"},
-                font={"color": "#ffffff", "size": 12}
+                font={"color": "#FFFFFF", "size": 12}
             )
 
     # --- Network options ---

@@ -2,10 +2,9 @@
 langchain>=0.1.0
 langchain-experimental>=0.0.45
 ollama==0.5.3
-langchain-ollama==0.3.7
+langchain-ollama>=0.3.7
 # Environment variable support
 python-dotenv>=1.0.0
-
 # Graph visualization
 pyvis>=0.3.2
 

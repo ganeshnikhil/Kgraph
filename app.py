@@ -35,6 +35,7 @@ if not ollama_models:
     st.sidebar.warning("⚠️ No Ollama models found. Use `ollama pull <model>` in your terminal.")
 selected_model = st.sidebar.selectbox("Select a model (fallback: gemma)", [""] + ollama_models)
 
+
 # --- Button to generate graph ---
 if text and st.sidebar.button("Generate Knowledge Graph"):
     hash_of_text = hash_text(text)
